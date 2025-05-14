@@ -4,7 +4,7 @@ A simple weather app built using Vite React + MUI + Typescript with a 7-day fore
 
 ## 📸 Preview
 
-![App Screenshot](../client/src/assets/Screenshot%202025-05-14%20141857.png)
+![App Screenshot](./client/src/assets/Screenshot%202025-05-14%20141857.png)
 ![App Screenshot](../client/src/assets/Screenshot%202025-05-14%20142452.png)
 ## 🚀 Features
 

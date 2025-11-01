@@ -6,7 +6,7 @@ export const getWeather = async (latitude, longitude) => {
 
     const data = await response.json()
 
-    console.log(data.current_weather  )
+    return data
 
   } catch (error) {
     console.log("Get Weather Error");

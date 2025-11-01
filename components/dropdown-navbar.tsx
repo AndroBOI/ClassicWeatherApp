@@ -15,24 +15,34 @@ import {
 
 type Checked = DropdownMenuCheckboxItemProps["checked"]
 
-export function DropdownNavbar () {
+
+interface DropdownProps {
+  value: boolean,
+  setValue: (value: boolean) => void
+}
+
+
+export function DropdownNavbar ({value, setValue}: DropdownProps) {
   
-   const [showTest, setShowTest] = React.useState<Checked>(false)
 
   return (
-    <DropdownMenu>
+    <div className="flex justify-between p-5">
+      <div className="font-bold">Weather App</div>
+ <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline">Open</Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
         <DropdownMenuLabel>View</DropdownMenuLabel>
           <DropdownMenuCheckboxItem
-          checked={showTest}
-          onCheckedChange={setShowTest}
+          checked={value}
+          onCheckedChange={setValue}
         >
           Test
         </DropdownMenuCheckboxItem>
       </DropdownMenuContent>
     </DropdownMenu>
+    </div>
+   
   )
 }

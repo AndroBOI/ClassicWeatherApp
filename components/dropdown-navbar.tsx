@@ -16,9 +16,8 @@ import {
 type Checked = DropdownMenuCheckboxItemProps["checked"]
 
 export function DropdownNavbar () {
-  const [showStatusBar, setShowStatusBar] = React.useState<Checked>(true)
-  const [showActivityBar, setShowActivityBar] = React.useState<Checked>(false)
-  const [showPanel, setShowPanel] = React.useState<Checked>(false)
+  
+   const [showTest, setShowTest] = React.useState<Checked>(false)
 
   return (
     <DropdownMenu>
@@ -26,26 +25,12 @@ export function DropdownNavbar () {
         <Button variant="outline">Open</Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
-        <DropdownMenuLabel>Appearance</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuCheckboxItem
-          checked={showStatusBar}
-          onCheckedChange={setShowStatusBar}
+        <DropdownMenuLabel>View</DropdownMenuLabel>
+          <DropdownMenuCheckboxItem
+          checked={showTest}
+          onCheckedChange={setShowTest}
         >
-          Status Bar
-        </DropdownMenuCheckboxItem>
-        <DropdownMenuCheckboxItem
-          checked={showActivityBar}
-          onCheckedChange={setShowActivityBar}
-          disabled
-        >
-          Activity Bar
-        </DropdownMenuCheckboxItem>
-        <DropdownMenuCheckboxItem
-          checked={showPanel}
-          onCheckedChange={setShowPanel}
-        >
-          Panel
+          Test
         </DropdownMenuCheckboxItem>
       </DropdownMenuContent>
     </DropdownMenu>

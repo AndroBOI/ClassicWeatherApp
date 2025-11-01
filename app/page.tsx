@@ -1,9 +1,13 @@
 import React from 'react'
 import { Button } from '@/components/ui/button'
+import { DropdownNavbar } from '@/components/dropdown-navbar'
+import Content from '@/components/content'
+
 const Page = () => {
   return (
     <>
-      <Button>Hello World</Button>
+      <DropdownNavbar/>
+      <Content/>
     </>
   )
 }

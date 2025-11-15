@@ -56,7 +56,7 @@ const Content = ({ value }: { value: boolean }) => {
   };
 
   return (
-    <div>
+    <div className=" min-h-[100dvh]">
       <div className="flex justify-center items-center">
         <form onSubmit={handleSubmit} className="flex w-lg gap-3">
           <div className="relative w-full">
@@ -80,25 +80,157 @@ const Content = ({ value }: { value: boolean }) => {
           <div className="text-red-600">Value is False</div>
         )}
 
-        <div className="flex justify-center ">
-          <div className="container flex">
-            <div className="w-[60%]">
-              <div className="bg-red-300 h-[160px]">
+        <div className="flex justify-center items-center">
+          <div className="container flex  space-x-5 ">
+            <div className="w-[70%] space-y-5">
+              <div
+                className="bg-cover bg-center h-[230px] flex justify-between items-center p-5 rounded-2xl"
+                style={{
+                  backgroundImage: `url(/assets/images/bg-today-large.svg)`,
+                }}
+              >
                 <div>
-                  {weather?.location.name}, {weather?.location.country}
+                  <div className="font-semibold text-lg ">Berlin, Germany</div>
+                  <div className="font-light text-xs">Tuesday, Aug 6 2025</div>
+                </div>
+                <div className="flex items-center space-x-5">
+                  <img
+                    src="/assets/images/icon-sunny.webp"
+                    alt=""
+                    className="h-20 w-20"
+                  />
+                  <div className="text-6xl italic font-semibold">68°</div>
                 </div>
               </div>
-              <div className="flex gap-5">
-                <div>{weather?.current.temperature}</div>
-                <div>{weather?.current.humidity}</div>
-                <div>{weather?.current.wind_speed}</div>
-                <div>{weather?.current.precipitation}</div>
+              <div className="grid grid-cols-4 gap-5">
+                <div className="bg-gray-700 h-[5rem] flex flex-col justify-center p-3 space-y-4 rounded-lg">
+                  {" "}
+                  <div className="text-[0.7rem]">Feels Like</div>{" "}
+                  <div className="text-lg">64°</div>{" "}
+                </div>{" "}
+                <div className="bg-gray-700 h-[5rem] flex flex-col justify-center p-3 space-y-4 rounded-lg">
+                  {" "}
+                  <div className="text-[0.7rem]">Humidity</div>{" "}
+                  <div className="text-lg">46%</div>{" "}
+                </div>{" "}
+                <div className="bg-gray-700 h-[5rem] flex flex-col justify-center p-3 space-y-4 rounded-lg">
+                  {" "}
+                  <div className="text-[0.7rem]">Wind</div>{" "}
+                  <div className="text-lg">9 mph</div>{" "}
+                </div>{" "}
+                <div className="bg-gray-700 h-[5rem] flex flex-col justify-center p-3 space-y-4 rounded-lg">
+                  {" "}
+                  <div className="text-[0.7rem]">Percipitation</div>{" "}
+                  <div className="text-lg">0 in</div>{" "}
+                </div>
               </div>
               <div>
                 <div>Daily Forecast</div>
+                <div className="grid grid-cols-7 gap-3 mt-5">
+                  <div className="rounded-md bg-gray-700 h-[9rem] p-3 flex flex-col justify-center items-center space-y-5">
+                    <div>Tue</div>
+                    <div>
+                      <img
+                        className="h-10 w-10"
+                        src="/assets/images/icon-rain.webp"
+                        alt=""
+                      />
+                    </div>
+                    <div className="flex text-xs justify-between w-full">
+                      <div>68°</div>
+                      <div>57°</div>
+                    </div>
+                  </div>
+                  <div className="rounded-md bg-gray-700 h-[9rem] p-3 flex flex-col justify-center items-center space-y-5">
+                    <div>Tue</div>
+                    <div>
+                      <img
+                        className="h-10 w-10"
+                        src="/assets/images/icon-rain.webp"
+                        alt=""
+                      />
+                    </div>
+                    <div className="flex text-xs justify-between w-full">
+                      <div>68°</div>
+                      <div>57°</div>
+                    </div>
+                  </div>
+                  <div className="rounded-md bg-gray-700 h-[9rem] p-3 flex flex-col justify-center items-center space-y-5">
+                    <div>Tue</div>
+                    <div>
+                      <img
+                        className="h-10 w-10"
+                        src="/assets/images/icon-rain.webp"
+                        alt=""
+                      />
+                    </div>
+                    <div className="flex text-xs justify-between w-full">
+                      <div>68°</div>
+                      <div>57°</div>
+                    </div>
+                  </div>
+                  <div className="rounded-md bg-gray-700 h-[9rem] p-3 flex flex-col justify-center items-center space-y-5">
+                    <div>Tue</div>
+                    <div>
+                      <img
+                        className="h-10 w-10"
+                        src="/assets/images/icon-rain.webp"
+                        alt=""
+                      />
+                    </div>
+                    <div className="flex text-xs justify-between w-full">
+                      <div>68°</div>
+                      <div>57°</div>
+                    </div>
+                  </div>
+                  <div className="rounded-md bg-gray-700 h-[9rem] p-3 flex flex-col justify-center items-center space-y-5">
+                    <div>Tue</div>
+                    <div>
+                      <img
+                        className="h-10 w-10"
+                        src="/assets/images/icon-rain.webp"
+                        alt=""
+                      />
+                    </div>
+                    <div className="flex text-xs justify-between w-full">
+                      <div>68°</div>
+                      <div>57°</div>
+                    </div>
+                  </div>
+                  <div className="rounded-md bg-gray-700 h-[9rem] p-3 flex flex-col justify-center items-center space-y-5">
+                    <div>Tue</div>
+                    <div>
+                      <img
+                        className="h-10 w-10"
+                        src="/assets/images/icon-rain.webp"
+                        alt=""
+                      />
+                    </div>
+                    <div className="flex text-xs justify-between w-full">
+                      <div>68°</div>
+                      <div>57°</div>
+                    </div>
+                  </div>
+                  <div className="rounded-md bg-gray-700 h-[9rem] p-3 flex flex-col justify-center items-center space-y-5">
+                    <div>Tue</div>
+                    <div>
+                      <img
+                        className="h-10 w-10"
+                        src="/assets/images/icon-rain.webp"
+                        alt=""
+                      />
+                    </div>
+                    <div className="flex text-xs justify-between w-full">
+                      <div>68°</div>
+                      <div>57°</div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-            <div></div>
+            <div className="w-[30%] min-h-scree bg-gray-700 rounded-2xl p-5">
+              <div>Hourly Forecast</div>
+            </div>
           </div>
         </div>
       </div>

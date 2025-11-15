@@ -10,10 +10,10 @@ const Page = () => {
   const[value, setValue] = useState(true)  
 
   return (
-    <>
+    <div>
       <DropdownNavbar value={value} setValue={setValue}/>
       <Content value={value}/>
-    </>
+    </div>
   )
 }
 

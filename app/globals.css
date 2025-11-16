@@ -46,6 +46,7 @@
 }
 
 :root {
+  ---test: #aeaeb73d;
   --radius: 0.625rem;
   --background:  hsl(243, 96%, 9%);
   --foreground: #ffffffde;

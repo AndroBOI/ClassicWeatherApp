@@ -1,3 +1,3 @@
-export const getWeather = async () => {
-  
+export const getWeather = async (city: string) => {
+    alert(city)
 }

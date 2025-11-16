@@ -1,28 +1,60 @@
 "use client";
 
 import { SearchIcon } from "lucide-react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
-
+import { getWeather } from "@/scripts/getWeather";
 
 const Content = ({ value }: { value: boolean }) => {
- 
+  const [city, setCity] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    if (!city.trim()) {
+      alert("Please enter a valid city");
+      return;
+    }
+
+    e.preventDefault();
+    getWeather(city);
+  };
 
   return (
     <div className=" min-h-[100dvh]">
       <div className="flex justify-center items-center">
-        <form  className="flex w-lg gap-3">
-          <div className="relative w-full">
-            <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+        <form onSubmit={handleSubmit} className="flex flex-col w-lg gap-3">
+          <div className="flex w-full gap-3">
+            <div className="relative w-full">
+              <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
 
-            <Input
+              <Input
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                placeholder="Search for a place..."
+                className="pl-9 placeholder:text-[#ffffff8b] text-xs"
+              />
+
+              {/* Dropdown */}
+
+                <div className="absolute top-full left-0 w-full mt-1 bg-[hsl(243, 96%, 9%)] shadow-lg z-10">
+                  <div className="bg-[#aeaeb71c] p-2 text-sm hover:border border-gray-400 cursor-pointer">
+                    Test 1
+                  </div>
+                  <div className="bg-[#aeaeb71c] p-2 text-sm hover:border border-gray-400 cursor-pointer">
+                    Test 2
+                  </div>
+                  <div className="bg-[#aeaeb71c] p-2 text-sm hover:border border-gray-400 cursor-pointer">
+                    Test 3
+                  </div>
+                  <div className="bg-[#aeaeb71c] p-2 text-sm hover:border border-gray-400 cursor-pointer">
+                    Test 4
+                  </div>
+                </div>
             
-              placeholder="Search for a place..."
-              className="pl-9 placeholder:text-[#ffffff8b] text-xs"
-            />
+            </div>
+
+            <Button type="submit">Search</Button>
           </div>
-          <Button type="submit">Search</Button>
         </form>
       </div>
 

@@ -26,13 +26,13 @@ export function DropdownNavbar({ value, setValue }: DropdownProps) {
       <div className="font-bold">Weather App</div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" className="bg-[#aeaeb71c] border-none text-sm hover:bg-[#aeaeb73d]">
+          <Button variant="outline" className="bg-[hsl(243,23%,24%)] border-none text-sm hover:bg-[hsl(243,23%,24%)]]">
             <img src="/assets/images/icon-units.svg" alt="" />
             <div>Units</div>
             <img src="/assets/images/icon-dropdown.svg" alt="" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-56 bg-[#aeaeb71c] border-none text-white">
+        <DropdownMenuContent className="w-56 bg-[hsl(243,23%,24%)] border-none text-white">
           <DropdownMenuLabel className="text-[#ffffffd3] font-medium">Switch to Imperial</DropdownMenuLabel>
             <DropdownMenuLabel className="text-xs text-gray-500">Temperature</DropdownMenuLabel>
           <DropdownMenuCheckboxItem className="flex justify-between focus:text-white" checked={value} onCheckedChange={setValue}>

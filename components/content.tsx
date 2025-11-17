@@ -1,23 +1,76 @@
 "use client";
 
 import { SearchIcon } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { getWeather } from "@/scripts/getWeather";
 
+interface City {
+  id: number;
+  name: string;
+  country: string;
+  admin1: string;
+  latitude: number;
+  longitude: number;
+}
+
 const Content = ({ value }: { value: boolean }) => {
   const [city, setCity] = useState("");
+  const [cities, setCitiest] = useState<City[]>([]);
+  const [showInputDropDown, setShowDropDown] = useState(false);
+  const [debounceTimer, setDebounceTimer] = useState<ReturnType<
+    typeof setTimeout
+  > | null>(null);
+
+  const fetchCities = async (query: string) => {
+    if (!query) return setCitiest([]);
+    try {
+      const res = await fetch(
+        `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(
+          query
+        )}`
+      );
+
+      const data: { results?: City[] } = await res.json();
+      setCitiest(data.results || []);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+     e.preventDefault();
     if (!city.trim()) {
       alert("Please enter a valid city");
       return;
     }
-
-    e.preventDefault();
-    getWeather(city);
+    
+    const selectedCity = cities.find(c => c.name === city)
+    if(!selectedCity) {
+      alert("Place not found")
+      return
+    }
+   
+    getWeather(selectedCity.latitude, selectedCity.longitude);
+    setShowDropDown(false);
   };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCity(e.target.value);
+    setShowDropDown(true);
+  };
+
+  useEffect(() => {
+    if (debounceTimer) clearTimeout(debounceTimer);
+
+    const timer = setTimeout(() => {
+      fetchCities(city);
+    }, 300);
+
+    setDebounceTimer(timer);
+    return () => clearTimeout(timer);
+  }, [city]);
 
   return (
     <div className=" min-h-[100dvh]">
@@ -29,28 +82,24 @@ const Content = ({ value }: { value: boolean }) => {
 
               <Input
                 value={city}
-                onChange={(e) => setCity(e.target.value)}
+                onChange={handleChange}
                 placeholder="Search for a place..."
-                className="pl-9 placeholder:text-[#ffffff8b] text-xs"
+                className="pl-9 placeholder:text-[#ffffff8b] text-xs bg-[hsl(243,23%,24%)]"
               />
 
-              {/* Dropdown */}
-
-                <div className="absolute top-full left-0 w-full mt-1 bg-[hsl(243, 96%, 9%)] shadow-lg z-10">
-                  <div className="bg-[#aeaeb71c] p-2 text-sm hover:border border-gray-400 cursor-pointer">
-                    Test 1
-                  </div>
-                  <div className="bg-[#aeaeb71c] p-2 text-sm hover:border border-gray-400 cursor-pointer">
-                    Test 2
-                  </div>
-                  <div className="bg-[#aeaeb71c] p-2 text-sm hover:border border-gray-400 cursor-pointer">
-                    Test 3
-                  </div>
-                  <div className="bg-[#aeaeb71c] p-2 text-sm hover:border border-gray-400 cursor-pointer">
-                    Test 4
-                  </div>
+              {showInputDropDown && city && cities.length > 0 && (
+                <div className="absolute top-full left-0 w-full mt-1 bg-[hsl(243, 96%, 9%)] shadow-lg z-10 bg-[hsl(243,23%,24%)] p-2">
+                  {cities.map((city) => (
+                    <div
+                    onClick={() => getWeather(city.latitude, city.longitude)}
+                      key={city.id}
+                      className=" p-2 text-sm hover:border border-gray-400 cursor-pointer"
+                    >
+                      {city.name}, {city.admin1}, {city.country}
+                    </div>
+                  ))}
                 </div>
-            
+              )}
             </div>
 
             <Button type="submit">Search</Button>

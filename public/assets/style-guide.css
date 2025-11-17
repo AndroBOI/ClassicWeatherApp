@@ -13,13 +13,7 @@ The designs were created to the following widths:
 
 ### Neutral
 
-- **Neutral 900**: hsl(243, 96%, 9%)
-- **Neutral 800**: hsl(243, 27%, 20%)
-- **Neutral 700**: hsl(243, 23%, 24%)
-- **Neutral 600**: hsl(243, 23%, 30%)
-- **Neutral 300**: hsl(240, 6%, 70%)
-- **Neutral 200**: hsl(250, 6%, 84%)
-- **Neutral 0**: hsl(0, 0%, 100%)
+
 
 ### Orange
 
@@ -45,3 +39,16 @@ The designs were created to the following widths:
 - Weights: 700
 
 > 💎 [Upgrade to Pro](https://www.frontendmentor.io/pro?ref=style-guide) for design file access to see all design details and get hands-on experience using a professional workflow with tools like Figma. The design file for this challenge also includes a design system and tablet layout to help you build a more accurate solution faster. */
+
+test {
+  color: hsl(243, 96%, 9%);
+  color: hsl(243, 27%, 20%);
+  color: hsl(243, 23%, 24%);
+  color: hsl(243, 23%, 30%);
+  color: hsl(240, 6%, 70%);
+  color: hsl(250, 6%, 84%);
+  color: hsl(0, 0%, 100%);
+  color: hsl(28, 100%, 52%);
+  color: hsl(233, 67%, 56%);
+  color: hsl(248, 70%, 36%);
+}

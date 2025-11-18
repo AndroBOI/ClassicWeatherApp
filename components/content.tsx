@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { getWeather } from "@/scripts/getWeather";
+import { WeatherResponse } from "@/scripts/getWeather";
 
 interface City {
   id: number;
@@ -16,6 +17,8 @@ interface City {
 }
 
 const Content = ({ value }: { value: boolean }) => {
+  const [selectedCityData, setSelectedCityData] = useState<string | null>(null);
+  const [weather, setWeather] = useState<WeatherResponse | null>(null);
   const [city, setCity] = useState("");
   const [cities, setCitiest] = useState<City[]>([]);
   const [showInputDropDown, setShowDropDown] = useState(false);
@@ -64,8 +67,14 @@ const Content = ({ value }: { value: boolean }) => {
       alert("Place not found");
       return;
     }
-
-    await getWeather(selectedCity.latitude, selectedCity.longitude);
+    setSelectedCityData(
+      `${selectedCity.name}, ${selectedCity.admin1}, ${selectedCity.country}`
+    );
+    const response = await getWeather(
+      selectedCity.latitude,
+      selectedCity.longitude
+    );
+    setWeather(response);
     setShowDropDown(false);
     setLoading(false);
   };
@@ -73,6 +82,21 @@ const Content = ({ value }: { value: boolean }) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCity(e.target.value);
     setShowDropDown(true);
+  };
+
+  const formattedDate = (date?: string | Date) => {
+    const options: Intl.DateTimeFormatOptions = {
+      weekday: "long",
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    };
+
+    const dateObj = typeof date === "string" ? new Date(date) : date;
+
+    const  formattedDateDate = new Intl.DateTimeFormat('en-us', options).format(dateObj)
+
+    return formattedDateDate
   };
 
   useEffect(() => {
@@ -106,7 +130,21 @@ const Content = ({ value }: { value: boolean }) => {
                 <div className="absolute top-full left-0 w-full mt-1 bg-[hsl(243, 96%, 9%)] shadow-lg z-10 bg-[hsl(243,23%,24%)] p-2">
                   {cities.map((city) => (
                     <div
-                      onClick={() => getWeather(city.latitude, city.longitude)}
+                      onClick={async () => {
+                        setCity(city.name);
+                        setSelectedCityData(
+                          `${city.name}, ${city.admin1}, ${city.country}`
+                        );
+                        setShowDropDown(false);
+                        setLoading(true);
+
+                        const response = await getWeather(
+                          city.latitude,
+                          city.longitude
+                        );
+                        setWeather(response);
+                        setLoading(false);
+                      }}
                       key={city.id}
                       className=" p-2 text-sm hover:border border-gray-400 cursor-pointer"
                     >
@@ -117,12 +155,16 @@ const Content = ({ value }: { value: boolean }) => {
               )}
             </div>
 
-            <Button className="w-[15%] flex justify-center" disabled={loading} type="submit">
+            <Button
+              className="w-[15%] flex justify-center"
+              disabled={loading}
+              type="submit"
+            >
               {loading ? (
                 <div className="w-full flex justify-center">
                   {" "}
                   <TailSpin
-                  strokeWidth={5}
+                    strokeWidth={5}
                     visible={true}
                     height="450"
                     width="450"
@@ -158,8 +200,12 @@ const Content = ({ value }: { value: boolean }) => {
                 }}
               >
                 <div>
-                  <div className="font-semibold text-lg ">Berlin, Germany</div>
-                  <div className="font-light text-xs">Tuesday, Aug 6 2025</div>
+                  <div className="font-semibold text-lg ">
+                    {selectedCityData}
+                  </div>
+                  <div className="font-light text-xs">
+                    {formattedDate(weather?.current.time)}
+                  </div>
                 </div>
                 <div className="flex items-center space-x-5">
                   <img
@@ -167,7 +213,9 @@ const Content = ({ value }: { value: boolean }) => {
                     alt=""
                     className="h-20 w-20"
                   />
-                  <div className="text-6xl italic font-semibold">68°</div>
+                  <div className="text-6xl italic font-semibold">
+                    {weather?.current.temperature_2m}°
+                  </div>
                 </div>
               </div>
               <div className="grid grid-cols-4 gap-5">

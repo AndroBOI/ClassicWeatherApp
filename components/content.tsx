@@ -1,5 +1,5 @@
 "use client";
-
+import { TailSpin } from "react-loader-spinner";
 import { SearchIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { Input } from "./ui/input";
@@ -22,9 +22,9 @@ const Content = ({ value }: { value: boolean }) => {
   const [debounceTimer, setDebounceTimer] = useState<ReturnType<
     typeof setTimeout
   > | null>(null);
-
-  const fetchCities = async (query: string) => {
-    if (!query) return setCitiest([]);
+  const [loading, setLoading] = useState(false);
+  const fetchCities = async (query: string): Promise<City[]> => {
+    if (!query.trim()) return [];
     try {
       const res = await fetch(
         `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(
@@ -33,27 +33,41 @@ const Content = ({ value }: { value: boolean }) => {
       );
 
       const data: { results?: City[] } = await res.json();
-      setCitiest(data.results || []);
+      return data.results || [];
     } catch (error) {
       console.log(error);
+      return [];
     }
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-     e.preventDefault();
+    e.preventDefault();
     if (!city.trim()) {
       alert("Please enter a valid city");
       return;
     }
-    
-    const selectedCity = cities.find(c => c.name === city)
-    if(!selectedCity) {
-      alert("Place not found")
-      return
+
+    setLoading(true);
+
+    const results = await fetchCities(city);
+    if (results.length === 0) {
+      setLoading(false);
+      return alert("Place not Found");
     }
-   
-    getWeather(selectedCity.latitude, selectedCity.longitude);
+
+    const selectedCity = results.find(
+      (c) =>
+        c.name.toLocaleLowerCase() === city.toLocaleLowerCase() || results[0]
+    );
+
+    if (!selectedCity) {
+      alert("Place not found");
+      return;
+    }
+
+    await getWeather(selectedCity.latitude, selectedCity.longitude);
     setShowDropDown(false);
+    setLoading(false);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -64,8 +78,9 @@ const Content = ({ value }: { value: boolean }) => {
   useEffect(() => {
     if (debounceTimer) clearTimeout(debounceTimer);
 
-    const timer = setTimeout(() => {
-      fetchCities(city);
+    const timer = setTimeout(async () => {
+      const results = await fetchCities(city);
+      setCitiest(results);
     }, 300);
 
     setDebounceTimer(timer);
@@ -77,7 +92,7 @@ const Content = ({ value }: { value: boolean }) => {
       <div className="flex justify-center items-center">
         <form onSubmit={handleSubmit} className="flex flex-col w-lg gap-3">
           <div className="flex w-full gap-3">
-            <div className="relative w-full">
+            <div className="relative w-[85%]">
               <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
 
               <Input
@@ -91,7 +106,7 @@ const Content = ({ value }: { value: boolean }) => {
                 <div className="absolute top-full left-0 w-full mt-1 bg-[hsl(243, 96%, 9%)] shadow-lg z-10 bg-[hsl(243,23%,24%)] p-2">
                   {cities.map((city) => (
                     <div
-                    onClick={() => getWeather(city.latitude, city.longitude)}
+                      onClick={() => getWeather(city.latitude, city.longitude)}
                       key={city.id}
                       className=" p-2 text-sm hover:border border-gray-400 cursor-pointer"
                     >
@@ -102,7 +117,26 @@ const Content = ({ value }: { value: boolean }) => {
               )}
             </div>
 
-            <Button type="submit">Search</Button>
+            <Button className="w-[15%] flex justify-center" disabled={loading} type="submit">
+              {loading ? (
+                <div className="w-full flex justify-center">
+                  {" "}
+                  <TailSpin
+                  strokeWidth={5}
+                    visible={true}
+                    height="450"
+                    width="450"
+                    color="#fff"
+                    ariaLabel="tail-spin-loading"
+                    radius="1"
+                    wrapperStyle={{}}
+                    wrapperClass=""
+                  />
+                </div>
+              ) : (
+                "Submit"
+              )}
+            </Button>
           </div>
         </form>
       </div>

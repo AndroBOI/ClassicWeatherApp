@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { getWeather } from "@/scripts/getWeather";
-import { WeatherResponse } from "@/scripts/getWeather";
+import { WeatherResponse, DailyWeather } from "@/scripts/getWeather";
 
 interface City {
   id: number;
@@ -16,7 +16,16 @@ interface City {
   longitude: number;
 }
 
+const DEFAULT_CITY = {
+  name: "Manila",
+  admin1: "Metro Manila",
+  country: "Philippines",
+  latitude: 14.5995,
+  longitude: 120.9842,
+};
+
 const Content = ({ value }: { value: boolean }) => {
+  const [daily, setDaily] = useState<DailyWeather | null>(null);
   const [selectedCityData, setSelectedCityData] = useState<string | null>(null);
   const [weather, setWeather] = useState<WeatherResponse | null>(null);
   const [city, setCity] = useState("");
@@ -41,6 +50,15 @@ const Content = ({ value }: { value: boolean }) => {
       console.log(error);
       return [];
     }
+  };
+
+  const getDailyIcon = (index: number) => {
+    const precip = daily?.precipitation_sum[index] ?? 0;
+
+    if (precip === 0) return "/assets/images/icon-sunny.webp";
+    if (precip > 0 && precip <= 2) return "/assets/images/icon-drizzle.webp";
+    if (precip > 2) return "/assets/images/icon-rain.webp";
+    return "/assets/images/icon-sunny.webp";
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -74,7 +92,9 @@ const Content = ({ value }: { value: boolean }) => {
       selectedCity.latitude,
       selectedCity.longitude
     );
+
     setWeather(response);
+    setDaily(response?.daily ?? null);
     setShowDropDown(false);
     setLoading(false);
   };
@@ -94,10 +114,31 @@ const Content = ({ value }: { value: boolean }) => {
 
     const dateObj = typeof date === "string" ? new Date(date) : date;
 
-    const  formattedDateDate = new Intl.DateTimeFormat('en-us', options).format(dateObj)
+    const formattedDateDate = new Intl.DateTimeFormat("en-us", options).format(
+      dateObj
+    );
 
-    return formattedDateDate
+    return formattedDateDate;
   };
+
+  useEffect(() => {
+    const fetchDefaultWeather = async () => {
+      setCity(DEFAULT_CITY.name);
+      setSelectedCityData(
+        `${DEFAULT_CITY.name}, ${DEFAULT_CITY.admin1}, ${DEFAULT_CITY.country}`
+      );
+      setLoading(true);
+      const response = await getWeather(
+        DEFAULT_CITY.latitude,
+        DEFAULT_CITY.longitude
+      );
+      setWeather(response);
+      setDaily(response?.daily ?? null);
+      setLoading(false);
+    };
+
+    fetchDefaultWeather();
+  }, []);
 
   useEffect(() => {
     if (debounceTimer) clearTimeout(debounceTimer);
@@ -221,122 +262,115 @@ const Content = ({ value }: { value: boolean }) => {
               <div className="grid grid-cols-4 gap-5">
                 <div className="bg-gray-700 h-[5rem] flex flex-col justify-center p-3 space-y-4 rounded-lg">
                   <div className="text-[0.7rem]">Feels Like</div>
-                  <div className="text-lg">64°</div>
+                  <div className="text-lg flex items-center">
+                    {loading ? (
+                      <TailSpin
+                        strokeWidth={5}
+                        visible={true}
+                        height="10"
+                        width="10"
+                        color="#fff"
+                        ariaLabel="tail-spin-loading"
+                        radius="1"
+                        wrapperStyle={{}}
+                        wrapperClass=""
+                      />
+                    ) : (
+                      weather?.current.temperature_2m
+                    )}
+                    <div>°</div>
+                  </div>
                 </div>
                 <div className="bg-gray-700 h-[5rem] flex flex-col justify-center p-3 space-y-4 rounded-lg">
                   <div className="text-[0.7rem]">Humidity</div>
-                  <div className="text-lg">46%</div>
+                  <div className="text-lg flex items-center">
+                    {loading ? (
+                      <TailSpin
+                        strokeWidth={5}
+                        visible={true}
+                        height="10"
+                        width="10"
+                        color="#fff"
+                        ariaLabel="tail-spin-loading"
+                        radius="1"
+                        wrapperStyle={{}}
+                        wrapperClass=""
+                      />
+                    ) : (
+                      weather?.current.relative_humidity_2m
+                    )}
+                    <div>%</div>
+                  </div>
                 </div>
                 <div className="bg-gray-700 h-[5rem] flex flex-col justify-center p-3 space-y-4 rounded-lg">
                   <div className="text-[0.7rem]">Wind</div>
-                  <div className="text-lg">9 mph</div>
+                  <div className="text-lg flex items-center gap-x-2">
+                    {loading ? (
+                      <TailSpin
+                        strokeWidth={5}
+                        visible={true}
+                        height="10"
+                        width="10"
+                        color="#fff"
+                        ariaLabel="tail-spin-loading"
+                        radius="1"
+                        wrapperStyle={{}}
+                        wrapperClass=""
+                      />
+                    ) : (
+                      weather?.current.wind_speed_10m
+                    )}
+                    <div>km/h</div>
+                  </div>
                 </div>
                 <div className="bg-gray-700 h-[5rem] flex flex-col justify-center p-3 space-y-4 rounded-lg">
                   <div className="text-[0.7rem]">Percipitation</div>
-                  <div className="text-lg">0 in</div>
+                  <div className="text-lg flex items-center gap-x-2">
+                    {loading ? (
+                      <TailSpin
+                        strokeWidth={5}
+                        visible={true}
+                        height="10"
+                        width="10"
+                        color="#fff"
+                        ariaLabel="tail-spin-loading"
+                        radius="1"
+                        wrapperStyle={{}}
+                        wrapperClass=""
+                      />
+                    ) : (
+                      weather?.current.precipitation
+                    )}
+                    <div>mm</div>
+                  </div>
                 </div>
               </div>
               <div>
                 <div>Daily Forecast</div>
                 <div className="grid grid-cols-7 gap-3 mt-5">
-                  <div className="rounded-md bg-gray-700 h-[9rem] p-3 flex flex-col justify-center items-center space-y-5">
-                    <div>Tue</div>
-                    <div>
-                      <img
-                        className="h-10 w-10"
-                        src="/assets/images/icon-rain.webp"
-                        alt=""
-                      />
+                  {daily?.time.map((day, index) => (
+                    <div
+                      key={index}
+                      className="rounded-md bg-gray-700 h-[9rem] p-3 flex flex-col justify-center items-center space-y-5"
+                    >
+                      <div>
+                        {new Date(day).toLocaleDateString("en-us", {
+                          weekday: "short",
+                        })}
+                      </div>
+                      <div>
+                        <img
+                          className="h-10 w-10"
+                          src={getDailyIcon(daily.precipitation_sum[index])}
+                          alt=""
+                        />
+                      </div>
+                      <div className="flex text-xs justify-between w-full">
+                        <div>{daily.temperature_2m_max[index]}°</div>
+                        <div>{daily.temperature_2m_min[index]}°</div>
+                      </div>
                     </div>
-                    <div className="flex text-xs justify-between w-full">
-                      <div>68°</div>
-                      <div>57°</div>
-                    </div>
-                  </div>
-                  <div className="rounded-md bg-gray-700 h-[9rem] p-3 flex flex-col justify-center items-center space-y-5">
-                    <div>Tue</div>
-                    <div>
-                      <img
-                        className="h-10 w-10"
-                        src="/assets/images/icon-rain.webp"
-                        alt=""
-                      />
-                    </div>
-                    <div className="flex text-xs justify-between w-full">
-                      <div>68°</div>
-                      <div>57°</div>
-                    </div>
-                  </div>
-                  <div className="rounded-md bg-gray-700 h-[9rem] p-3 flex flex-col justify-center items-center space-y-5">
-                    <div>Tue</div>
-                    <div>
-                      <img
-                        className="h-10 w-10"
-                        src="/assets/images/icon-rain.webp"
-                        alt=""
-                      />
-                    </div>
-                    <div className="flex text-xs justify-between w-full">
-                      <div>68°</div>
-                      <div>57°</div>
-                    </div>
-                  </div>
-                  <div className="rounded-md bg-gray-700 h-[9rem] p-3 flex flex-col justify-center items-center space-y-5">
-                    <div>Tue</div>
-                    <div>
-                      <img
-                        className="h-10 w-10"
-                        src="/assets/images/icon-rain.webp"
-                        alt=""
-                      />
-                    </div>
-                    <div className="flex text-xs justify-between w-full">
-                      <div>68°</div>
-                      <div>57°</div>
-                    </div>
-                  </div>
-                  <div className="rounded-md bg-gray-700 h-[9rem] p-3 flex flex-col justify-center items-center space-y-5">
-                    <div>Tue</div>
-                    <div>
-                      <img
-                        className="h-10 w-10"
-                        src="/assets/images/icon-rain.webp"
-                        alt=""
-                      />
-                    </div>
-                    <div className="flex text-xs justify-between w-full">
-                      <div>68°</div>
-                      <div>57°</div>
-                    </div>
-                  </div>
-                  <div className="rounded-md bg-gray-700 h-[9rem] p-3 flex flex-col justify-center items-center space-y-5">
-                    <div>Tue</div>
-                    <div>
-                      <img
-                        className="h-10 w-10"
-                        src="/assets/images/icon-rain.webp"
-                        alt=""
-                      />
-                    </div>
-                    <div className="flex text-xs justify-between w-full">
-                      <div>68°</div>
-                      <div>57°</div>
-                    </div>
-                  </div>
-                  <div className="rounded-md bg-gray-700 h-[9rem] p-3 flex flex-col justify-center items-center space-y-5">
-                    <div>Tue</div>
-                    <div>
-                      <img
-                        className="h-10 w-10"
-                        src="/assets/images/icon-rain.webp"
-                        alt=""
-                      />
-                    </div>
-                    <div className="flex text-xs justify-between w-full">
-                      <div>68°</div>
-                      <div>57°</div>
-                    </div>
-                  </div>
+                  ))}
                 </div>
               </div>
             </div>

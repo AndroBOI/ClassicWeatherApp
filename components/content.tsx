@@ -5,7 +5,11 @@ import React, { useEffect, useState } from "react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { getWeather } from "@/scripts/getWeather";
-import { WeatherResponse, DailyWeather } from "@/scripts/getWeather";
+import {
+  WeatherResponse,
+  DailyWeather,
+  HourlyWeather,
+} from "@/scripts/getWeather";
 
 interface City {
   id: number;
@@ -25,6 +29,7 @@ const DEFAULT_CITY = {
 };
 
 const Content = ({ value }: { value: boolean }) => {
+  const [hourly, setHourly] = useState<HourlyWeather | null>(null);
   const [daily, setDaily] = useState<DailyWeather | null>(null);
   const [selectedCityData, setSelectedCityData] = useState<string | null>(null);
   const [weather, setWeather] = useState<WeatherResponse | null>(null);
@@ -51,6 +56,12 @@ const Content = ({ value }: { value: boolean }) => {
       return [];
     }
   };
+
+  const formattedTime = (data: string) => {
+    const date = new Date(data)
+    return date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+  }
+
 
   const getDailyIcon = (index: number) => {
     const precip = daily?.precipitation_sum[index] ?? 0;
@@ -94,6 +105,7 @@ const Content = ({ value }: { value: boolean }) => {
     );
 
     setWeather(response);
+    setHourly(response?.hourly ?? null);
     setDaily(response?.daily ?? null);
     setShowDropDown(false);
     setLoading(false);
@@ -134,6 +146,7 @@ const Content = ({ value }: { value: boolean }) => {
       );
       setWeather(response);
       setDaily(response?.daily ?? null);
+      setHourly(response?.hourly ?? null);
       setLoading(false);
     };
 
@@ -376,6 +389,14 @@ const Content = ({ value }: { value: boolean }) => {
             </div>
             <div className="w-[30%] min-h-scree bg-gray-700 rounded-2xl p-5">
               <div>Hourly Forecast</div>
+              <div className="space-y-5">
+                {hourly?.time.map((hour, index) => (
+                  <div className="bg-[hsl(243,23%,30%)] p-3 flex justify-between rounded-md"  key={index}>
+                    <div>{formattedTime(hourly.time[index])}</div>
+                    <div>{hourly.temperature_2m[index]}°</div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>

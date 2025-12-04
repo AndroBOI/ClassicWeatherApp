@@ -11,6 +11,10 @@ import {
   HourlyWeather,
 } from "@/scripts/getWeather";
 
+
+import DailyCard from "./daily-card";
+import HourlyCard from "./hourly-card";
+
 interface City {
   id: number;
   name: string;
@@ -58,10 +62,9 @@ const Content = ({ value }: { value: boolean }) => {
   };
 
   const formattedTime = (data: string) => {
-    const date = new Date(data)
-    return date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
-  }
-
+    const date = new Date(data);
+    return date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+  };
 
   const getDailyIcon = (index: number) => {
     const precip = daily?.precipitation_sum[index] ?? 0;
@@ -196,6 +199,8 @@ const Content = ({ value }: { value: boolean }) => {
                           city.latitude,
                           city.longitude
                         );
+                        setHourly(response?.hourly ?? null);
+                        setDaily(response?.daily ?? null);
                         setWeather(response);
                         setLoading(false);
                       }}
@@ -362,27 +367,14 @@ const Content = ({ value }: { value: boolean }) => {
                 <div>Daily Forecast</div>
                 <div className="grid grid-cols-7 gap-3 mt-5">
                   {daily?.time.map((day, index) => (
-                    <div
+                    <DailyCard
                       key={index}
-                      className="rounded-md bg-gray-700 h-[9rem] p-3 flex flex-col justify-center items-center space-y-5"
-                    >
-                      <div>
-                        {new Date(day).toLocaleDateString("en-us", {
-                          weekday: "short",
-                        })}
-                      </div>
-                      <div>
-                        <img
-                          className="h-10 w-10"
-                          src={getDailyIcon(daily.precipitation_sum[index])}
-                          alt=""
-                        />
-                      </div>
-                      <div className="flex text-xs justify-between w-full">
-                        <div>{daily.temperature_2m_max[index]}°</div>
-                        <div>{daily.temperature_2m_min[index]}°</div>
-                      </div>
-                    </div>
+                      day={day}
+                      max={daily.temperature_2m_max[index]}
+                      min={daily.temperature_2m_min[index]}
+                      precipitation={daily.precipitation_sum[index]}
+                      getDailyIcon={getDailyIcon}
+                    />
                   ))}
                 </div>
               </div>
@@ -391,10 +383,12 @@ const Content = ({ value }: { value: boolean }) => {
               <div>Hourly Forecast</div>
               <div className="space-y-5">
                 {hourly?.time.map((hour, index) => (
-                  <div className="bg-[hsl(243,23%,30%)] p-3 flex justify-between rounded-md"  key={index}>
-                    <div>{formattedTime(hourly.time[index])}</div>
-                    <div>{hourly.temperature_2m[index]}°</div>
-                  </div>
+                  <HourlyCard
+                    key={index}
+                    time={hourly.time[index]}
+                    temp={hourly.temperature_2m[index]}
+                    formattedTime={formattedTime} // ⬅️ pass function
+                  />
                 ))}
               </div>
             </div>

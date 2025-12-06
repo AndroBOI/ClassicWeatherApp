@@ -8,17 +8,23 @@ import React, {
   ReactNode,
 } from "react";
 import type { WeatherData } from "@/types/weathertypes";
-
+import { getGeoCoordinate } from "@/utilities/getCoordinates";
 interface WeatherContextType {
   weather: WeatherData | null;
   loading: boolean;
   error: string | null;
+  searchValue: string;
+  setSearchValue: (value: string) => void;
+  handleSearch: () => void;
 }
 
 const WeatherContext = createContext<WeatherContextType>({
   weather: null,
   loading: true,
   error: null,
+  searchValue: "",
+  setSearchValue: () => {},
+  handleSearch: () => {},
 });
 
 interface WeatherProviderProps {
@@ -35,6 +41,12 @@ export function WeatherProvider({
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [searchValue, setSearchValue] = useState("");
+
+  const handleSearch = async () => {
+    const results = await getGeoCoordinate(searchValue);
+    console.log("Search results:", results);
+  };
 
   useEffect(() => {
     const fetchWeather = async () => {
@@ -45,8 +57,9 @@ export function WeatherProvider({
         if (!response.ok) throw new Error("Failed to fetch weather data");
         const data: WeatherData = await response.json();
         setWeather(data);
-      } catch (err: any) {
-        setError(err.message);
+        console.log(data);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "An error occurred");
       } finally {
         setLoading(false);
       }
@@ -56,7 +69,16 @@ export function WeatherProvider({
   }, [latitude, longitude]);
 
   return (
-    <WeatherContext.Provider value={{ weather, loading, error }}>
+    <WeatherContext.Provider
+      value={{
+        weather,
+        loading,
+        error,
+        searchValue,
+        setSearchValue,
+        handleSearch,
+      }}
+    >
       {children}
     </WeatherContext.Provider>
   );

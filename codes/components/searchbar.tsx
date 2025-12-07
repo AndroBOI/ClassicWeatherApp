@@ -5,6 +5,8 @@ import { Input } from "./ui/input";
 import { useWeather } from "@/contexts/WeatherContext";
 import { GeoLocation } from "@/types/geolocationtypes";
 import { useDebounce } from "@/hooks/useDebouce";
+import { Card } from "./ui/card";
+
 
 const SearchBar = () => {
   const { searchValue, setSearchValue, handleSearch } = useWeather();
@@ -63,15 +65,15 @@ const SearchBar = () => {
       </div>
 
       {isOpen && (loading || cities.length > 0) && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg max-h-64 overflow-y-auto z-50">
+        <div className="absolute top-full left-0 right-0 mt-2  rounded-lg shadow-lg max-h-64 overflow-y-auto z-50">
           {loading ? (
             <div className="p-4 text-center text-gray-500">Searching...</div>
           ) : (
             cities.map((city, i) => (
-              <div
+              <Card
                 key={i}
                 onClick={() => handleCitySelect(city)}
-                className="p-3 hover:bg-gray-100 cursor-pointer border-b border-gray-100 last:border-b-0"
+                className="p-2 gap-0 hover:bg-gray-100 cursor-pointer"
               >
                 <div className="font-medium">{city.name}</div>
                 {(city.admin1 || city.country) && (
@@ -79,7 +81,7 @@ const SearchBar = () => {
                     {[city.admin1, city.country].filter(Boolean).join(", ")}
                   </div>
                 )}
-              </div>
+              </Card>
             ))
           )}
         </div>

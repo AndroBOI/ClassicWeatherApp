@@ -1,6 +1,7 @@
 "use client";
 
 import React, {
+  useCallback,
   createContext,
   useContext,
   useState,
@@ -44,11 +45,11 @@ export function WeatherProvider({
   const [error, setError] = useState<string | null>(null);
   const [searchValue, setSearchValue] = useState("");
 
-  const handleSearch = async (): Promise<GeoLocation[]> => {
+  const handleSearch = useCallback(async (): Promise<GeoLocation[]> => {
     const results = await getGeoCoordinate(searchValue);
     console.log("Search results:", results);
     return results;
-  };
+  }, [searchValue]);
 
   useEffect(() => {
     const fetchWeather = async () => {

@@ -5,7 +5,7 @@ import { WeatherProvider } from "@/contexts/WeatherContext";
 
 export const page = () => {
   return (
-    <div className="flex justify-center items-center w-full h-dvh bg-gray-100">
+    <div className="flex justify-center items-center w-full h-dvh ">
       <WeatherProvider latitude={37.566} longitude={126.978}>
         <div
           style={{ msOverflowStyle: "none", scrollbarWidth: "none" }}
@@ -16,7 +16,7 @@ export const page = () => {
           w-screen
          h-full
           scrollbar-hide
-          bg-white
+         
           shadow-xl
         "
         >

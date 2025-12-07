@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-
+import { ThemeProvider } from "@/components/themeprovider";
 import "./globals.css";
 import { Architects_Daughter } from "next/font/google";
 
@@ -19,11 +19,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
-        className={`flex justify-center items-center ${arch.variable} ${arch.variable} antialiased`}
+        className={`flex justify-center items-center ${arch.variable} antialiased`}
       >
-        {children}
+        <ThemeProvider
+           attribute="class"
+          defaultTheme="light"
+          enableSystem={false}
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

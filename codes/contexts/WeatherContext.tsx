@@ -9,13 +9,14 @@ import React, {
 } from "react";
 import type { WeatherData } from "@/types/weathertypes";
 import { getGeoCoordinate } from "@/utilities/getCoordinates";
+import { GeoLocation } from "@/types/geolocationtypes";
 interface WeatherContextType {
   weather: WeatherData | null;
   loading: boolean;
   error: string | null;
   searchValue: string;
   setSearchValue: (value: string) => void;
-  handleSearch: () => void;
+  handleSearch: () => Promise<GeoLocation[]>;
 }
 
 const WeatherContext = createContext<WeatherContextType>({
@@ -24,7 +25,7 @@ const WeatherContext = createContext<WeatherContextType>({
   error: null,
   searchValue: "",
   setSearchValue: () => {},
-  handleSearch: () => {},
+  handleSearch: async () => [],
 });
 
 interface WeatherProviderProps {
@@ -43,9 +44,10 @@ export function WeatherProvider({
   const [error, setError] = useState<string | null>(null);
   const [searchValue, setSearchValue] = useState("");
 
-  const handleSearch = async () => {
+  const handleSearch = async (): Promise<GeoLocation[]> => {
     const results = await getGeoCoordinate(searchValue);
     console.log("Search results:", results);
+    return results;
   };
 
   useEffect(() => {

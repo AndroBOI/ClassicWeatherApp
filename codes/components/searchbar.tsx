@@ -7,15 +7,17 @@ import { GeoLocation } from "@/types/geolocationtypes";
 import { useDebounce } from "@/hooks/useDebouce";
 import { Card } from "./ui/card";
 
-
 const SearchBar = () => {
-  const { searchValue, setSearchValue, handleSearch } = useWeather();
+  const { searchValue, setSearchValue, handleSearch, setCoordinates } =
+    useWeather();
+
   const [cities, setCities] = useState<GeoLocation[]>([]);
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const debouncedSearchValue = useDebounce(searchValue, 500);
 
   useEffect(() => {
+    if (!isOpen) return;
     if (!debouncedSearchValue || debouncedSearchValue.trim().length < 2) {
       setCities([]);
       return;
@@ -25,7 +27,7 @@ const SearchBar = () => {
       setLoading(true);
       setIsOpen(true);
       try {
-        const results = await handleSearch();
+        const results = await handleSearch(debouncedSearchValue);
         setCities(results || []);
       } catch (error) {
         console.error("Search error:", error);
@@ -36,13 +38,24 @@ const SearchBar = () => {
     };
 
     search();
-  }, [debouncedSearchValue, handleSearch]);
+  }, [debouncedSearchValue, handleSearch, isOpen]);
 
   const handleCitySelect = (city: GeoLocation) => {
     console.log("Selected city:", city);
     setSearchValue(city.name);
+    setCoordinates(city);
     setCities([]);
     setIsOpen(false);
+  };
+
+  const handleClick = () => {
+    if (cities.length > 0) {
+      const firstCity = cities[0];
+      setSearchValue(firstCity.name);
+      setCoordinates(firstCity); 
+      setCities([]);
+      setIsOpen(false);
+    }
   };
 
   return (
@@ -54,10 +67,11 @@ const SearchBar = () => {
             setSearchValue(e.target.value);
             setIsOpen(true);
           }}
-          className="border-1 rounded-full border-black pr-10"
+          className=" rounded-full shadow-lg pr-10 focus:ring-0 focus:border-none"
           placeholder="Search for a city..."
         />
         <Search
+        onClick={handleClick}
           className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-400"
           strokeWidth={1}
           size={20}
@@ -73,7 +87,7 @@ const SearchBar = () => {
               <Card
                 key={i}
                 onClick={() => handleCitySelect(city)}
-                className="p-2 gap-0 hover:bg-gray-100 cursor-pointer"
+                className="p-2 gap-0 hover:bg-primary hover:text-primary-foreground cursor-pointer"
               >
                 <div className="font-medium">{city.name}</div>
                 {(city.admin1 || city.country) && (

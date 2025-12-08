@@ -10,17 +10,16 @@ export const getGeoCoordinate = async (
     const encodedPlace = encodeURIComponent(place.trim());
     const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodedPlace}&count=${count}&language=en&format=json`;
 
-    const response = await fetch(url)
-    
-    
-    if(!response.ok) throw new Error(`Geocoding API error: ${response.status}`)
+    const response = await fetch(url);
 
-    const data: GeocodingResponse = await response.json()
-    console.log(data)
-    return data.results || []
+    if (!response.ok)
+      throw new Error(`Geocoding API error: ${response.status}`);
 
+    const data: GeocodingResponse = await response.json();
+    console.log("data: " + data.results);
+    return data.results || [];
   } catch (err) {
     console.error("Failed to fetch geo coordinates: ", err);
-    throw err instanceof Error ? err : new Error("An error occured")
+    throw err instanceof Error ? err : new Error("An error occured");
   }
 };

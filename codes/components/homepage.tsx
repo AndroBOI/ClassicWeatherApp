@@ -2,12 +2,12 @@
 
 import { useWeather } from "@/contexts/WeatherContext";
 import SearchBar from "./searchbar";
-import { Droplets, Wind, Flame, Sun, Snowflake, Moon } from "lucide-react";
+import { Droplets, Wind, Flame, Sun, Snowflake } from "lucide-react";
 import formattedTime from "@/utilities/formattedTime";
 import { ModeToggle } from "./modetoggle";
 
 const HomePage = () => {
-  const { weather, loading, error } = useWeather();
+  const { weather, loading, error, selectedCity } = useWeather();
 
   if (loading)
     return (
@@ -52,7 +52,11 @@ const HomePage = () => {
             )}
             <p className="text-8xl">{current.temperature_2m}°</p>
           </div>
+          <p>
+            {selectedCity?.name}, {selectedCity?.admin1} {selectedCity?.country}
+          </p>
         </div>
+
         <div className="flex space-x-10">
           <p className="flex gap-3">
             <Droplets /> {current.relative_humidity_2m}%

@@ -11,15 +11,17 @@ import React, {
 import type { WeatherData } from "@/types/weathertypes";
 import { getGeoCoordinate } from "@/utilities/getCoordinates";
 import { GeoLocation } from "@/types/geolocationtypes";
+
 interface WeatherContextType {
   weather: WeatherData | null;
   loading: boolean;
   error: string | null;
   searchValue: string;
   setSearchValue: (value: string) => void;
-  handleSearch: () => Promise<GeoLocation[]>;
+  handleSearch: (query: string) => Promise<GeoLocation[]>;
+  setCoordinates: (city: GeoLocation) => void;
+  selectedCity: GeoLocation | null;
 }
-
 const WeatherContext = createContext<WeatherContextType>({
   weather: null,
   loading: true,
@@ -27,6 +29,8 @@ const WeatherContext = createContext<WeatherContextType>({
   searchValue: "",
   setSearchValue: () => {},
   handleSearch: async () => [],
+  setCoordinates: () => {},
+  selectedCity: null,
 });
 
 interface WeatherProviderProps {
@@ -40,22 +44,40 @@ export function WeatherProvider({
   latitude,
   longitude,
 }: WeatherProviderProps) {
+  const [selectedCity, setSelectedCity] = useState<GeoLocation>({
+    name: "Seoul",
+    country: "South Korea",
+    latitude: 37.566,
+    longitude: 126.978,
+  });
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [searchValue, setSearchValue] = useState("");
+  const [searchValue, setSearchValue] = useState("Seoul");
+  const [lat, setLat] = useState(latitude);
+  const [lon, setLon] = useState(longitude);
 
-  const handleSearch = useCallback(async (): Promise<GeoLocation[]> => {
-    const results = await getGeoCoordinate(searchValue);
-    console.log("Search results:", results);
-    return results;
-  }, [searchValue]);
+  const setCoordinates = (city: GeoLocation) => {
+    setLat(city.latitude);
+    setLon(city.longitude);
+    setSelectedCity(city);
+  };
+  const handleSearch = useCallback(
+    async (query: string): Promise<GeoLocation[]> => {
+      if (!query || query.trim().length < 2) return [];
+      const results = await getGeoCoordinate(query);
+
+      console.log("Search results:", results);
+      return results;
+    },
+    []
+  );
 
   useEffect(() => {
     const fetchWeather = async () => {
       setLoading(true);
       try {
-        const url = `https://api.open-meteo.com/v1/forecast?latitude=37.566&longitude=126.978&current=temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m&hourly=temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m,weathercode&forecast_hours=8&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,sunrise,sunset&forecast_days=7&timezone=auto`;
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m&hourly=temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m,weathercode&forecast_hours=8&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,sunrise,sunset&forecast_days=7&timezone=auto`;
         const response = await fetch(url);
         if (!response.ok) throw new Error("Failed to fetch weather data");
         const data: WeatherData = await response.json();
@@ -69,7 +91,7 @@ export function WeatherProvider({
     };
 
     fetchWeather();
-  }, [latitude, longitude]);
+  }, [lat, lon]);
 
   return (
     <WeatherContext.Provider
@@ -80,6 +102,8 @@ export function WeatherProvider({
         searchValue,
         setSearchValue,
         handleSearch,
+        setCoordinates,
+        selectedCity,
       }}
     >
       {children}

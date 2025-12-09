@@ -16,10 +16,10 @@ const DailyPage = () => {
   const daysCount = daily.time.length;
 
   const getPrecipitationIcon = (value: number) => {
-    if (value === 0) return <Sun />;
-    if (value <= 3) return <CloudSunRain />;
-    if (value <= 10) return <CloudDrizzle />;
-    return <CloudRain />;
+    if (value === 0) return <Sun strokeWidth={3}/>;
+    if (value <= 3) return <CloudSunRain strokeWidth={3}/>;
+    if (value <= 10) return <CloudDrizzle strokeWidth={3}/>;
+    return <CloudRain strokeWidth={3}/>;
   };
 
   return (
@@ -27,7 +27,7 @@ const DailyPage = () => {
       {Array.from({ length: daysCount }).map((_, i) => (
         <div key={i} className="p-3 border rounded shadow flex justify-between items-center">
           <div>
-            <div>{formatFullDate(daily.time[i])}</div>
+            <div className="text-sm">{formatFullDate(daily.time[i])}</div>
             <div className="font-bold">{getDayName(daily.time[i])}</div>
           </div>
           <div>{getPrecipitationIcon(daily.precipitation_sum[i])}</div>

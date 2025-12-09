@@ -16,11 +16,12 @@ const HourlyPage = () => {
   const hourlyCount = hourly.time.length;
 
   const getPrecipitationIcon = (value: number) => {
-    if (value === 0) return <Sun />;
-    if (value <= 3) return <CloudSunRain />;
-    if (value <= 10) return <CloudDrizzle />;
-    return <CloudRain />;
+    if (value === 0) return <Sun strokeWidth={3}/>;
+    if (value <= 3) return <CloudSunRain strokeWidth={3}/>;
+    if (value <= 10) return <CloudDrizzle strokeWidth={3}/>;
+    return <CloudRain strokeWidth={3}/>;
   };
+
 
   return (
     <div className="min-h-dvh  p-4 space-y-4 flex flex-col justify-center">

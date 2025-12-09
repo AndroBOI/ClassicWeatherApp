@@ -31,7 +31,7 @@ const HomePage = () => {
   const { current } = weather;
 
   return (
-    <div className=" border-2 min-h-dvh  grid grid-rows-[2fr_6fr]  items-center px-5 pb-5">
+    <div className="min-h-dvh  grid grid-rows-[2fr_6fr]  items-center px-5 pb-5">
       <div className="mt-[3rem] h-full space-y-5">
         <div className="flex justify-between">
           <ModeToggle />

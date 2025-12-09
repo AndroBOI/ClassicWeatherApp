@@ -10,7 +10,7 @@ Dark/Light mode toggle
 
 📸 Screenshots
 
-<div style="display:flex; gap:10px;"> <img src="/codes/screenshots/Screenshot 2025-12-09 194020.png" width="300" alt="App Screenshot 1" /> <img src="/codes/screenshots/Screenshot 2025-12-09 193921.png" width="300" alt="App Screenshot 2" /> </div>
+<div style="display:flex; gap:10px;"> <img src="/codes/public/screenshots/Screenshot 2025-12-09 194020.png" width="300" alt="App Screenshot 1" /> <img src="/codes/public/screenshots/Screenshot 2025-12-09 193921.png" width="300" alt="App Screenshot 2" /> </div>
 🚀 Features
 
 Hourly & Daily Forecast – View detailed weather for each hour and day.

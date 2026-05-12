@@ -3,7 +3,7 @@ import DailyPage from "@/components/dailypage";
 import HourlyPage from "@/components/hourlypage";
 import { WeatherProvider } from "@/contexts/WeatherContext";
 
-export const page = () => {
+export default function Page() {
   return (
     <div className="flex justify-center items-center w-full h-dvh ">
       <WeatherProvider latitude={37.566} longitude={126.978}>
@@ -35,5 +35,5 @@ export const page = () => {
       </WeatherProvider>
     </div>
   );
-};
-export default page;
+}
+
